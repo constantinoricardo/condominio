@@ -55,6 +55,27 @@ class Morador extends Controller
         }
     }
 
+    public function edit() : string {
+
+        try {
+
+            $this->parametros();
+
+            $morador = DB::table("morador")
+                ->select("morador.id", "morador.nome", "morador.cpf",
+                    "apartamento.numero")
+                ->leftJoin("apartamento", "apartamento.morador_id", "=", "morador.id")
+                ->leftJoin("bloco", "apartamento.bloco_id", "=", "bloco.id")
+                ->where("morador.id", "=", $this->id)
+                ->get();
+
+            echo json_encode($morador);
+
+        } catch (\Error $e) {
+            echo "Houve um erro " . $e->getMessage();
+        }
+    }
+
     public function inserir() : string {
         try {
 
