@@ -4,6 +4,7 @@ namespace Controller;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use Model\Apartamento as ModelApartamento;
+use Repositories\Apartamento as ApartamentoRepository;
 
 class Apartamento extends Controller
 {
@@ -71,9 +72,28 @@ class Apartamento extends Controller
             $this->parametros();
 
             $apartamentos = DB::table("apartamento")
-                ->select( "id", "numero", "bloco_id")
-                ->where("bloco_id", "=", $this->bloco_id)
-                ->whereNotNull("morador_id")
+                ->select( "apartamento.id", "apartamento.numero", "bloco.descricao")
+                ->join("bloco", "bloco.id", "=", "apartamento.bloco_id")
+                ->whereNull("apartamento.morador_id")
+                ->get();
+
+            echo json_encode($apartamentos);
+
+        } catch (\Error $e) {
+            $array = array('message' => "Ocorreu um erro " . $e->getMessage());
+            echo json_encode($array);
+        }
+    }
+
+    public function buscarDescricaoBloco() : string {
+        try {
+
+            $this->parametros();
+
+            $apartamentos = DB::table("apartamento")
+                ->select( "bloco.descricao")
+                ->join("bloco", "bloco.id", "=", "apartamento.bloco_id")
+                ->where("apartamento.id", "=", $this->id)
                 ->get();
 
             echo json_encode($apartamentos);
@@ -88,6 +108,11 @@ class Apartamento extends Controller
         try {
 
             $this->parametros();
+
+            $apartamento = new ApartamentoRepository();
+            $apartamento->alterarMoradorApartamento($this->id, $this->morador_id);
+
+            echo "Morador alterado com sucesso!";
 
         } catch (\Error $e) {
             echo "Ocorreu um erro " . $e->getMessage();
