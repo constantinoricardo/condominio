@@ -84,6 +84,18 @@ class Apartamento extends Controller
         }
     }
 
+    public function alterarMorador(): void {
+        try {
+
+            $this->parametros();
+
+        } catch (\Error $e) {
+            echo "Ocorreu um erro " . $e->getMessage();
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
     public function alterar() : void {
         try {
 

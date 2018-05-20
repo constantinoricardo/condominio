@@ -4,6 +4,7 @@ namespace Controller;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use Model\Morador as ModelMorador;
+use Repositories\Apartamento;
 
 class Morador extends Controller
 {
@@ -14,6 +15,8 @@ class Morador extends Controller
 
     private $cpf;
 
+    private $apartamento_id;
+
     public function parametros() : void {
         $params = $this->getParameters();
 
@@ -21,6 +24,7 @@ class Morador extends Controller
             $this->id = $params['id'];
             $this->nome = $params['nome'];
             $this->cpf = $params['cpf'];
+            $this->apartamento_id = $params['apartamento_id'];
         }
     }
 
@@ -57,18 +61,31 @@ class Morador extends Controller
             $this->parametros();
             $this->validarMorador();
 
-            $morador = ModelMorador::query()->insert([
-                'nome' => $this->nome,
-                'cpf' => $this->cpf
-            ]);
+            DB::connection()->beginTransaction();
 
-            if ($morador)
+            $morador = new ModelMorador();
+            $morador->nome = $this->nome;
+            $morador->cpf = $this->cpf;
+            $morador->save();
+
+            $morador_id = $morador->id;
+
+            if ($morador) {
+
+                $apartamento = new Apartamento();
+                $apartamento->alterarMoradorApartamento($this->apartamento_id, $morador_id);
+
                 echo "Morador cadastrado com sucesso.";
+            }
+
+            DB::connection()->commit();
 
         } catch (\Error $e) {
             echo "Houve um erro " . $e->getMessage();
+            DB::connection()->rollBack();
         } catch (\Exception $e) {
             echo $e->getMessage();
+            DB::connection()->rollBack();
         }
     }
 
