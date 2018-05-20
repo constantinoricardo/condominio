@@ -108,6 +108,7 @@ class Apartamento extends Controller
         try {
 
             $this->parametros();
+            $this->validarMoradorExisteApartamento();
 
             $apartamento = new ApartamentoRepository();
             $apartamento->alterarMoradorApartamento($this->id, $this->morador_id);
@@ -141,6 +142,16 @@ class Apartamento extends Controller
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
+    }
+
+    private function validarMoradorExisteApartamento() {
+        $elemento = DB::table("apartamento")
+            ->select("id")
+            ->where("morador_id", "=", $this->morador_id)
+            ->get();
+
+        if (!is_null($elemento[0]))
+            throw new \Exception("Este morador já possui esse apartamento");
     }
 
     private function validarApartamento() {
