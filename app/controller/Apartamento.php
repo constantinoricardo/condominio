@@ -14,6 +14,8 @@ class Apartamento extends Controller
 
     private $bloco_id;
 
+    private $morador_id;
+
     public function parametros() : void {
         $params = $this->getParameters();
 
@@ -22,6 +24,9 @@ class Apartamento extends Controller
             $this->bloco_id = $params['bloco_id'];
             $this->id = $params['id'];
         }
+
+        if (isset($params['morador_id']))
+            $this->morador_id = $params['morador_id'];
     }
 
     public function delete() : void {
@@ -68,9 +73,7 @@ class Apartamento extends Controller
             $apartamentos = DB::table("apartamento")
                 ->select( "id", "numero", "bloco_id")
                 ->where("bloco_id", "=", $this->bloco_id)
-                ->whereNotIn("id", function($q) {
-                    $q->select("apartamento_id")->from("morador");
-                })
+                ->whereNotNull("morador_id")
                 ->get();
 
             echo json_encode($apartamentos);
