@@ -17,7 +17,8 @@ class Morador extends Controller
 
     private $apartamento_id;
 
-    public function parametros() : void {
+    public function parametros() : void
+    {
         $params = $this->getParameters();
 
         if (!empty($params)) {
@@ -28,7 +29,8 @@ class Morador extends Controller
         }
     }
 
-    private function validarMorador() {
+    private function validarMorador()
+    {
 
         $elemento = DB::table("morador")
             ->select("nome")
@@ -40,7 +42,8 @@ class Morador extends Controller
             throw new \Exception("Morador já se encontra cadastrado");
     }
 
-    public function delete() : void {
+    public function delete() : void
+    {
         try {
 
             $this->parametros();
@@ -55,7 +58,17 @@ class Morador extends Controller
         }
     }
 
-    public function edit() : string {
+    /**
+     *
+     * @author Ricardo Constantino
+     *
+     * metodo que faz a edicao do morador,
+     * apenas para mostrar na tela no formulario,
+     *
+     * @return string
+     */
+    public function edit() : string
+    {
 
         try {
 
@@ -76,7 +89,8 @@ class Morador extends Controller
         }
     }
 
-    public function inserir() : string {
+    public function inserir() : string
+    {
         try {
 
             $this->parametros();

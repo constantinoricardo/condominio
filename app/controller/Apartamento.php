@@ -17,7 +17,8 @@ class Apartamento extends Controller
 
     private $morador_id;
 
-    public function parametros() : void {
+    public function parametros() : void
+    {
         $params = $this->getParameters();
 
         if (!empty($params)) {
@@ -30,7 +31,8 @@ class Apartamento extends Controller
             $this->morador_id = $params['morador_id'];
     }
 
-    public function delete() : void {
+    public function delete() : void
+    {
         try {
 
             $this->parametros();
@@ -45,7 +47,8 @@ class Apartamento extends Controller
         }
     }
 
-    public function inserir() : void {
+    public function inserir() : void
+    {
         try {
 
             $this->parametros();
@@ -66,7 +69,8 @@ class Apartamento extends Controller
         }
     }
 
-    public function find() : string {
+    public function find() : string
+    {
         try {
 
             $this->parametros();
@@ -85,7 +89,15 @@ class Apartamento extends Controller
         }
     }
 
-    public function buscarDescricaoBloco() : string {
+    /**
+     * @author Ricardo Constantino
+     *
+     * na tela de morador, busca-se a descricao do bloco
+     * onde ele mora
+     * @return string
+     */
+    public function buscarDescricaoBloco() : string
+    {
         try {
 
             $this->parametros();
@@ -104,7 +116,8 @@ class Apartamento extends Controller
         }
     }
 
-    public function alterarMorador(): void {
+    public function alterarMorador(): void
+    {
         try {
 
             $this->parametros();
@@ -122,7 +135,37 @@ class Apartamento extends Controller
         }
     }
 
-    public function alterar() : void {
+    /**
+     *
+     * @author Ricardo Constantino
+     *
+     * metodo para buscar o apartamento, ou seja,
+     * edicao do apartamento, apenas para mostrar na tela no formulario
+     *
+     * @return string
+     */
+    public function edit() : string
+    {
+        try {
+
+            $this->parametros();
+
+            $apartamento = DB::table("apartamento")
+                ->select( "apartamento.id", "apartamento.numero", "bloco.descricao")
+                ->join("bloco", "bloco.id", "=", "apartamento.bloco_id")
+                ->where("apartamento.id", "=", $this->id)
+                ->get();
+
+            echo json_encode($apartamento);
+
+        } catch (\Error $e) {
+            $array = array('message' => "Ocorreu um erro " . $e->getMessage());
+            echo json_encode($array);
+        }
+    }
+
+    public function alterar() : void
+    {
         try {
 
             $this->parametros();
@@ -144,7 +187,8 @@ class Apartamento extends Controller
         }
     }
 
-    private function validarMoradorExisteApartamento() {
+    private function validarMoradorExisteApartamento()
+    {
         $elemento = DB::table("apartamento")
             ->select("id")
             ->where("morador_id", "=", $this->morador_id)
@@ -154,8 +198,8 @@ class Apartamento extends Controller
             throw new \Exception("Este morador já possui esse apartamento");
     }
 
-    private function validarApartamento() {
-
+    private function validarApartamento()
+    {
         $elemento = DB::table("apartamento")
                     ->select("numero")
                     ->where("numero", "=", $this->numero)
