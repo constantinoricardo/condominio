@@ -31,7 +31,6 @@ class Morador extends Controller
 
     private function validarMorador()
     {
-
         $elemento = DB::table("morador")
             ->select("nome")
             ->where("nome", "=", $this->nome)

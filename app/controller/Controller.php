@@ -2,8 +2,8 @@
 
 namespace Controller;
 
-class Controller {
-
+class Controller
+{
     private $parameters = array();
 
     public function __construct()

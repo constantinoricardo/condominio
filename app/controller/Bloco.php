@@ -7,8 +7,8 @@ use Model\Bloco as ModelBloco;
 class Bloco extends Controller
 {
 
-    public function inserir() : string {
-
+    public function inserir() : string
+    {
         try {
             $params = $this->getParameters();
 
@@ -32,7 +32,8 @@ class Bloco extends Controller
     }
 
 
-    public function find() : string {
+    public function find() : string
+    {
         try {
 
             $elements = ModelBloco::all(['numero', 'descricao'])->all();
