@@ -68,7 +68,6 @@ class Morador extends Controller
      */
     public function edit() : string
     {
-
         try {
 
             $this->parametros();
