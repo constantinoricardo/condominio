@@ -42,8 +42,7 @@ class Agendamento extends Controller
 
         $validator = $this->getValidator();
 
-        if (!$validator->validate($params))
-        {
+        if (!$validator->validate($params)) {
             $message = $validator->getMessages()['morador_id'][0]->getTemplate();
             throw new \Exception($message);
         }
