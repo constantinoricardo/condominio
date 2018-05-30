@@ -9,7 +9,8 @@
     "psr-4" : {
       "Controller\\": "app/controller/",
       "Model\\": "app/model/",
-      "Repositories\\": "app/repositories"
+      "Repositories\\": "app/repositories",
+      "Helper\\": "app/helper"
     }
   }
 }
