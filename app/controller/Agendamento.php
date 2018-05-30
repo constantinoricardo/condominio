@@ -6,6 +6,7 @@ use Repositories\Morador as MoradorRepositories;
 use Repositories\Items as ItemsRepositories;
 use Model\Agendamento as ModelAgendamento;
 use Model\ItemAgendamento as ModelItemAgendamento;
+use Helper\Data;
 use Illuminate\Database\Capsule\Manager as DB;
 use Sirius\Validation\Validator;
 
@@ -18,8 +19,6 @@ class Agendamento extends Controller
 
     private $data_reserva;
 
-    private $pagamento;
-
     private $descricao;
 
     private $item_id;
@@ -29,7 +28,6 @@ class Agendamento extends Controller
         $validator = new Validator();
         $validator->add('morador_id', 'required', '', 'Morador é obrigatório.');
         $validator->add('data_reserva', 'required', '', 'Data da Reserva é obrigatória.');
-        $validator->add('pagamento', 'required', '', 'Pagamento é obrigatório.');
         $validator->add('descricao', 'required', '','Descrição é obrigatória.');
         $validator->add('item_id', 'required', '','Item é obrigatório.');
 
@@ -38,21 +36,23 @@ class Agendamento extends Controller
 
     public function parametros() : void
     {
+        $messages = array();
         $params = $this->getParameters();
 
         $validator = $this->getValidator();
 
         if (!$validator->validate($params)) {
-            $message = $validator->getMessages()['morador_id'][0]->getTemplate();
-            throw new \Exception($message);
+            foreach ($validator->getMessages() as $k => $value) {
+                $messages[] = $value[0]->getTemplate();
+            }
+            throw new \Exception($messages[0]);
         }
 
         $this->id = $params['id'];
         $this->morador_id = $params['morador_id'];
-        $this->data_reserva = $params['data_reserva'];
-        $this->pagamento = $params['pagamento'];
+        $this->data_reserva = Data::formatDateDatabase($params['data_reserva']);
         $this->descricao = $params['descricao'];
-        $this->item_id = $params['item'];
+        $this->item_id = $params['item_id'];
     }
 
     private function verificarExisteAgendamentoData() : void
@@ -124,32 +124,37 @@ class Agendamento extends Controller
             $this->parametros();
             $this->verificarExisteAgendamentoData();
 
-            $agendamento = ModelAgendamento::query()->insert([
-                "morador_id" => $this->morador_id,
-                "data_reserva" => $this->data_reserva,
-                "data_included_at" => date("Y-m-d H:i:s"),
-                "pagamento" => $this->pagamento,
-                "descricao" => $this->descricao
-            ]);
+            DB::connection()->beginTransaction();
 
-            if ($agendamento->id) {
+            $modalAgendamento = new ModelAgendamento();
+            $modalAgendamento->morador_id = $this->morador_id;
+            $modalAgendamento->data_reserva = $this->data_reserva;
+            $modalAgendamento->date_included_at = date("Y-m-d H:i:s");
+            $modalAgendamento->pagamento = ItemsRepositories::findPrice($this->item_id);
+            $modalAgendamento->descricao = $this->descricao;
+            $modalAgendamento->save();
+
+            if ($modalAgendamento->id) {
 
                 foreach ($this->item_id as $k => $item) {
                     $itemAgendamento = ModelItemAgendamento::query()->insert([
-                        "item_id" => $this->item_id,
-                        "agendamento_id" => $agendamento->id
+                        "item_id" => $item,
+                        "agendamento_id" => $modalAgendamento->id
                     ]);
                 }
 
                 if ($itemAgendamento)
                     echo "Agendamento realizado com sucesso!";
 
+                DB::connection()->commit();
             }
 
 
         } catch (\Error $e) {
+            DB::connection()->rollBack();
             echo "Ocorreu um erro " . $e->getMessage();
         } catch (\Exception $e) {
+            DB::connection()->rollBack();
             echo $e->getMessage();
         }
     }
