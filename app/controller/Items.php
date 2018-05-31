@@ -3,6 +3,7 @@
 namespace Controller;
 
 use Model\Items as ModelItems;
+use Helper\Data;
 
 class Items extends Controller
 {
@@ -14,8 +15,7 @@ class Items extends Controller
             $params = $this->getParameters();
 
             $descricao = $params['descricao'];
-            $preco = str_replace(".", "", $params['preco']);
-            $preco = str_replace(",", ".", $preco);
+            $preco = Data::formatPriceDatabase($params['preco']);
 
             $items = ModelItems::query()->insert([
                 "descricao" => $descricao,
@@ -41,8 +41,7 @@ class Items extends Controller
 
             $id = $params['id'];
             $descricao = $params['descricao'];
-            $preco = str_replace(".", "", $params['preco']);
-            $preco = str_replace(",", ".", $preco);
+            $preco = Data::formatPriceDatabase($params['preco']);
 
             $objeto = new ModelItems();
             $item = $objeto->find($id);
