@@ -122,7 +122,7 @@ class Bloco extends Controller
     {
         try {
 
-            $elements = ModelBloco::all(['numero', 'descricao'])->all();
+            $elements = ModelBloco::all(['id', 'numero', 'descricao'])->all();
             echo json_encode($elements);
 
         } catch (\Error $e) {
