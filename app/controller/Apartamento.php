@@ -38,13 +38,26 @@ class Apartamento extends Controller
             $this->parametros();
 
             ModelApartamento::destroy($this->id);
-            echo "Apartamento excluído.";
+            $response = array(
+                "status" => 1,
+                "message" => "Apartamento excluído"
+            );
+            echo json_encode($response);
 
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     public function inserir() : void
@@ -59,14 +72,27 @@ class Apartamento extends Controller
                 'bloco_id' => $this->bloco_id
             ]);
 
-            if ($apartamento)
-                echo "Apartamento cadastrado com sucesso.";
-
+            if ($apartamento) {
+                $response = array(
+                    "status" => 1,
+                    "message" => "Apartamento cadastrado com sucesso."
+                );
+                echo json_encode($response);
+            }
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     public function find() : string
@@ -84,9 +110,10 @@ class Apartamento extends Controller
             echo json_encode($apartamentos);
 
         } catch (\Error $e) {
-            $array = array('message' => "Ocorreu um erro " . $e->getMessage());
+            $array = array("status" => 2,'message' => "Ocorreu um erro " . $e->getMessage());
             echo json_encode($array);
         }
+        exit;
     }
 
     /**
@@ -111,9 +138,10 @@ class Apartamento extends Controller
             echo json_encode($apartamentos);
 
         } catch (\Error $e) {
-            $array = array('message' => "Ocorreu um erro " . $e->getMessage());
+            $array = array('status' => 2, 'message' => "Ocorreu um erro " . $e->getMessage());
             echo json_encode($array);
         }
+        exit;
     }
 
     public function alterarMorador(): void
@@ -126,13 +154,25 @@ class Apartamento extends Controller
             $apartamento = new ApartamentoRepository();
             $apartamento->alterarMoradorApartamento($this->id, $this->morador_id);
 
-            echo "Morador alterado com sucesso!";
-
+            $response = array(
+                "status" => 1,
+                "message" => "Morador alterado com sucesso"
+            );
+            echo json_encode($response);
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     /**
@@ -159,9 +199,10 @@ class Apartamento extends Controller
             echo json_encode($apartamento);
 
         } catch (\Error $e) {
-            $array = array('message' => "Ocorreu um erro " . $e->getMessage());
+            $array = array('status' => 2, 'message' => "Ocorreu um erro " . $e->getMessage());
             echo json_encode($array);
         }
+        exit;
     }
 
     public function alterar() : void
@@ -178,13 +219,25 @@ class Apartamento extends Controller
             $apartamento->bloco_id = $this->bloco_id;
             $apartamento->save();
 
-            echo "Apartamento atualizado com sucesso.";
-
+            $response = array(
+                "status" => 1,
+                "message" => "Apartamento atualizado com sucesso."
+            );
+            echo json_encode($response);
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     private function validarMoradorExisteApartamento()

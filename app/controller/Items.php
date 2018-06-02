@@ -22,15 +22,27 @@ class Items extends Controller
                 "preco" => $preco
             ]);
 
-            if ($items)
-                echo 'Item cadastrado com sucesso';
-
-            echo 'Item não cadastrado';
+            if ($items) {
+                $response = array(
+                    "status" => 1,
+                    "message" => "Item cadastrado com sucesso."
+                );
+                echo json_encode($response);
+            }
         } catch (\Exception $e) {
-            echo "Ocorreu uma exceção " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Error $e) {
-            echo "Ocorreu um Erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     public function alterar() : string
@@ -50,13 +62,26 @@ class Items extends Controller
             $item->preco = $preco;
             $item->save();
 
-            echo "Item alterado com sucesso.";
+            $response = array(
+                "status" => 1,
+                "message" => "Item alterado com sucesso."
+            );
+            echo json_encode($response);
 
+        } catch (\Exception $e) {
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Error $e) {
-            echo "Ocorreu uma exceção " . $e->getMessage();
-        } catch (\Error $e) {
-            echo "Ocorreu um Erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     public function find() : string
@@ -76,8 +101,9 @@ class Items extends Controller
             echo json_encode($dados);
 
         } catch (\Error $e) {
-            $message = array ('message' => 'Ocorreu um Erro ' . $e->getMessage());
+            $message = array ('status' => 2, 'message' => 'Ocorreu um Erro ' . $e->getMessage());
             echo json_encode($message);
         }
+        exit;
     }
 }

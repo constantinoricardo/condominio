@@ -3,32 +3,118 @@
 namespace Controller;
 
 use Model\Bloco as ModelBloco;
+use Sirius\Validation\Validator;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class Bloco extends Controller
 {
 
+    private $numero;
+
+    private $descricao;
+
+    public function getValidator()
+    {
+        $validator = new Validator();
+        $validator->add('numero', 'required', '', 'Número é obrigatório.');
+        $validator->add('descricao', 'required', '','Descrição do bloco é obrigatório.');
+
+        return $validator;
+    }
+
+    public function parametros() : void
+    {
+        $messages = array();
+        $params = $this->getParameters();
+
+        $validator = $this->getValidator();
+
+        if (!$validator->validate($params)) {
+            foreach ($validator->getMessages() as $k => $value) {
+                $messages[] = $value[0]->getTemplate();
+            }
+            throw new \Exception($messages[0]);
+        }
+
+        $this->numero = $params['numero'];
+        $this->descricao = $params['descricao'];
+    }
+
+    private function validarNumeroBlocoDescricaoExiste()
+    {
+        $elemento = DB::table("bloco")
+            ->select("id")
+            ->where("numero", "=", $this->numero)
+            ->orWhere("descricao", "=", $this->descricao)
+            ->get();
+
+        if (!is_null($elemento[0]))
+            throw new \Exception("Este bloco já existe.");
+    }
+
+    public function delete() : void
+    {
+        try {
+
+            $this->parametros();
+
+            ModelBloco::destroy($this->id);
+            $response = array(
+                "status" => 1,
+                "message" => "Bloco excluído com sucesso."
+            );
+            echo json_encode($response);
+
+        } catch (\Error $e) {
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
+
+        } catch (\Exception $e) {
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
+        }
+        exit;
+    }
+
     public function inserir() : string
     {
         try {
-            $params = $this->getParameters();
-
-            $numero = $params['numero'];
-            $descricao = $params['descricao'];
+            $this->parametros();
+            $this->validarNumeroBlocoDescricaoExiste();
 
             $bloco = ModelBloco::query()->insert([
-                "numero" => $numero,
-                "descricao" => $descricao
+                "numero" => $this->numero,
+                "descricao" => $this->descricao
             ]);
 
-            if ($bloco)
-                echo 'Bloco cadastrado com sucesso';
+            if ($bloco) {
+                $response = array(
+                    "status" => 1,
+                    "message" => "Bloco cadastrado com sucesso."
+                );
+                echo json_encode($response);
+            }
 
-            echo 'Bloco não cadastrado';
         } catch (\Exception $e) {
-            echo "Ocorreu uma exceção " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Error $e) {
-            echo "Ocorreu um Erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
 
@@ -43,5 +129,6 @@ class Bloco extends Controller
             $message = array ('message' => 'Ocorreu um Erro ' . $e->getMessage());
             echo json_encode($message);
         }
+        exit;
     }
 }

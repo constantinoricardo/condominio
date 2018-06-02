@@ -48,13 +48,25 @@ class Morador extends Controller
             $this->parametros();
 
             ModelMorador::destroy($this->id);
-            echo "Morador excluído.";
-
+            $response = array(
+                "status" => 1,
+                "message" => "Morador excluído com sucesso."
+            );
+            echo json_encode($response);
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     /**
@@ -83,8 +95,13 @@ class Morador extends Controller
             echo json_encode($morador);
 
         } catch (\Error $e) {
-            echo "Houve um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     public function inserir() : string
@@ -108,18 +125,31 @@ class Morador extends Controller
                 $apartamento = new Apartamento();
                 $apartamento->alterarMoradorApartamento($this->apartamento_id, $morador_id);
 
-                echo "Morador cadastrado com sucesso.";
+                $response = array(
+                    "status" => 1,
+                    "message" => "Morador cadastrado com sucesso."
+                );
+                echo json_encode($response);
             }
 
             DB::connection()->commit();
 
         } catch (\Error $e) {
-            echo "Houve um erro " . $e->getMessage();
             DB::connection()->rollBack();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
             DB::connection()->rollBack();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
 

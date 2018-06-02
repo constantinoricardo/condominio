@@ -85,10 +85,19 @@ class Agendamento extends Controller
             echo json_encode($items);
 
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     /**
@@ -110,10 +119,20 @@ class Agendamento extends Controller
             echo json_encode($morador);
 
         } catch (\Error $e) {
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
+
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
     public function agendar() : string
@@ -143,20 +162,32 @@ class Agendamento extends Controller
                     ]);
                 }
 
-                if ($itemAgendamento)
-                    echo "Agendamento realizado com sucesso!";
-
-                DB::connection()->commit();
+                if ($itemAgendamento) {
+                    $response = array(
+                        "status" => 1,
+                        "message" => "Agendamento realizado com sucesso!"
+                    );
+                    echo json_encode($response);
+                    DB::connection()->commit();
+                }
             }
-
-
         } catch (\Error $e) {
             DB::connection()->rollBack();
-            echo "Ocorreu um erro " . $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
+
         } catch (\Exception $e) {
             DB::connection()->rollBack();
-            echo $e->getMessage();
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
         }
+        exit;
     }
 
 }

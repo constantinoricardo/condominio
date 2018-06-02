@@ -13,6 +13,14 @@ new Database();
 $dados = "";
 $dados = json_decode(file_get_contents('php://input'), true);
 
+if (is_null($dados)) {
+    if (!empty($_POST))
+        $dados = $_POST;
+
+    if (!empty($_GET))
+        $dados = $_GET;
+}
+
 $path = $_SERVER['PATH_INFO'];
 $info = explode('/', $path);
 
