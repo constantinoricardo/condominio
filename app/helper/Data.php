@@ -2,6 +2,13 @@
 
 namespace Helper;
 
+/**
+ *
+ * @author Ricardo Constantino
+ * 
+ * Class Data
+ * @package Helper
+ */
 class Data
 {
 
