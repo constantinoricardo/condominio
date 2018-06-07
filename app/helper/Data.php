@@ -13,6 +13,7 @@ class Data
 {
 
     /**
+     * Method for change date normal to date database
      * @param $date
      * @return string
      */
