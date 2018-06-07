@@ -12,6 +12,10 @@ namespace Helper;
 class Data
 {
 
+    /**
+     * @param $date
+     * @return string
+     */
     public static function formatDateDatabase($date) : string
     {
         $date = explode("/", $date);
