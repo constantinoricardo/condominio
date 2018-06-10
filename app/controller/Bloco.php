@@ -22,11 +22,9 @@ class Bloco extends Controller
         return $validator;
     }
 
-    public function parametros() : void
+    public function validateParameters() : void
     {
-        $messages = array();
         $params = $this->getParameters();
-
         $validator = $this->getValidator();
 
         if (!$validator->validate($params)) {
@@ -35,6 +33,12 @@ class Bloco extends Controller
             }
             throw new \Exception($messages[0]);
         }
+    }
+
+    public function parametros() : void
+    {
+        $messages = array();
+        $params = $this->getParameters();
 
         $this->numero = $params['numero'];
         $this->descricao = $params['descricao'];
@@ -85,6 +89,9 @@ class Bloco extends Controller
     public function inserir() : string
     {
         try {
+
+            $this->validateParameters();
+
             $this->parametros();
             $this->validarNumeroBlocoDescricaoExiste();
 
