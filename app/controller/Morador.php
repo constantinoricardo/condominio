@@ -126,6 +126,7 @@ class Morador extends Controller
                 $apartamento->alterarMoradorApartamento($this->apartamento_id, $morador_id);
 
                 $response = array(
+                    "id" =>$morador_id,
                     "status" => 1,
                     "message" => "Morador cadastrado com sucesso."
                 );

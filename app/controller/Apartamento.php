@@ -67,13 +67,17 @@ class Apartamento extends Controller
             $this->parametros();
             $this->validarApartamento();
 
-            $apartamento = ModelApartamento::query()->insert([
-                'numero' => $this->numero,
-                'bloco_id' => $this->bloco_id
-            ]);
+            $apartamento = new ModelApartamento();
+            $apartamento->numero = $this->numero;
+            $apartamento->bloco_id = $this->bloco_id;
+            $apartamento->morador_id = $this->morador_id;
+            $apartamento->save();
 
-            if ($apartamento) {
+            $id = $apartamento->id;
+
+            if ($id) {
                 $response = array(
+                    "id" => $id,
                     "status" => 1,
                     "message" => "Apartamento cadastrado com sucesso."
                 );

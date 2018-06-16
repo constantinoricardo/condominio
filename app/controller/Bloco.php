@@ -37,9 +37,9 @@ class Bloco extends Controller
 
     public function parametros() : void
     {
-        $messages = array();
         $params = $this->getParameters();
 
+        $this->id = $params['id'];
         $this->numero = $params['numero'];
         $this->descricao = $params['descricao'];
     }
@@ -91,17 +91,19 @@ class Bloco extends Controller
         try {
 
             $this->validateParameters();
-
             $this->parametros();
             $this->validarNumeroBlocoDescricaoExiste();
 
-            $bloco = ModelBloco::query()->insert([
-                "numero" => $this->numero,
-                "descricao" => $this->descricao
-            ]);
+            $bloco = new ModelBloco();
+            $bloco->numero = $this->numero;
+            $bloco->descricao = $this->descricao;
+            $bloco->save();
 
-            if ($bloco) {
+            $id = $bloco->id;
+
+            if ($id) {
                 $response = array(
+                    "id" => $id,
                     "status" => 1,
                     "message" => "Bloco cadastrado com sucesso."
                 );

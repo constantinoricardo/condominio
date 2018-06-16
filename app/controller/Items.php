@@ -17,13 +17,16 @@ class Items extends Controller
             $descricao = $params['descricao'];
             $preco = Data::formatPriceDatabase($params['preco']);
 
-            $items = ModelItems::query()->insert([
-                "descricao" => $descricao,
-                "preco" => $preco
-            ]);
+            $items = new ModelItems();
+            $items->descricao = $descricao;
+            $items->preco = $preco;
+            $items->save();
 
-            if ($items) {
+            $id = $items->id;
+
+            if ($id) {
                 $response = array(
+                    "id" => $id,
                     "status" => 1,
                     "message" => "Item cadastrado com sucesso."
                 );

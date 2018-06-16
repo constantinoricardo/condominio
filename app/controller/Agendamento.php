@@ -164,6 +164,7 @@ class Agendamento extends Controller
 
                 if ($itemAgendamento) {
                     $response = array(
+                        "id" => $modalAgendamento->id,
                         "status" => 1,
                         "message" => "Agendamento realizado com sucesso!"
                     );
