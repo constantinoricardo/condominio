@@ -92,7 +92,7 @@ class Bloco extends Controller
 
             $this->validateParameters();
             $this->parametros();
-            $this->validarNumeroBlocoDescricaoExiste();
+            // $this->validarNumeroBlocoDescricaoExiste();
 
             $objeto = new ModelBloco();
             $bloco = $objeto->find($this->id);
