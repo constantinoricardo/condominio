@@ -61,6 +61,9 @@ class Items extends Controller
             $objeto = new ModelItems();
             $item = $objeto->find($id);
 
+            if (is_null($item))
+                throw new \Exception("Por favor, escolha um item que exista!");
+
             $item->descricao = $descricao;
             $item->preco = $preco;
             $item->save();

@@ -219,6 +219,9 @@ class Apartamento extends Controller
             $objeto = new ModelApartamento();
             $apartamento = $objeto->find($this->id);
 
+            if (is_null($apartamento))
+                throw new \Exception("Por favor, escolha um apartamento que exista!");
+
             $apartamento->numero = $this->numero;
             $apartamento->bloco_id = $this->bloco_id;
             $apartamento->save();

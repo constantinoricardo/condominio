@@ -86,6 +86,46 @@ class Bloco extends Controller
         exit;
     }
 
+    public function alterar() : string
+    {
+        try {
+
+            $this->validateParameters();
+            $this->parametros();
+            $this->validarNumeroBlocoDescricaoExiste();
+
+            $objeto = new ModelBloco();
+            $bloco = $objeto->find($this->id);
+
+            if (is_null($bloco))
+                throw new \Exception("Por favor, escolha um bloco que exista!");
+
+            $bloco->numero = $this->numero;
+            $bloco->descricao = $this->descricao;
+            $bloco->save();
+
+            $response = array(
+                "status" => 1,
+                "message" => "Bloco alterado com sucesso."
+            );
+            echo json_encode($response);
+
+        } catch (\Exception $e) {
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
+        } catch (\Error $e) {
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
+            );
+            echo json_encode($response);
+        }
+        exit;
+    }
+
     public function inserir() : string
     {
         try {
