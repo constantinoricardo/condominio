@@ -9,6 +9,8 @@ use Illuminate\Database\Capsule\Manager as DB;
 class Bloco extends Controller
 {
 
+    private $id;
+
     private $numero;
 
     private $descricao;
@@ -42,6 +44,28 @@ class Bloco extends Controller
         $this->id = $params['id'];
         $this->numero = $params['numero'];
         $this->descricao = $params['descricao'];
+    }
+
+    private function validarNumeroBlocoDescricaoExisteOutros()
+    {
+        $elementoDescricao = DB::table("bloco")
+            ->select("id")
+            ->where("descricao", "=", $this->descricao)
+            ->where("id", "<>", $this->id)
+            ->get();
+
+        if (!is_null($elementoDescricao[0]))
+            throw new \Exception("Descrição existente em outro bloco.");
+
+        $elementoNumero = DB::table("bloco")
+            ->select("id")
+            ->where("numero", "=", $this->numero)
+            ->where("id", "<>", $this->id)
+            ->get();
+
+        if (!is_null($elementoNumero[0]))
+            throw new \Exception("Número existente em outro bloco.");
+
     }
 
     private function validarNumeroBlocoDescricaoExiste()
@@ -80,6 +104,46 @@ class Bloco extends Controller
             $response = array(
                 "status" => 2,
                 "message" => $e->getMessage()
+            );
+            echo json_encode($response);
+        }
+        exit;
+    }
+
+    public function alterar() : string
+    {
+        try {
+
+            $this->validateParameters();
+            $this->parametros();
+            $this->validarNumeroBlocoDescricaoExisteOutros();
+
+            $objeto = new ModelBloco();
+            $bloco = $objeto->find($this->id);
+
+            if (is_null($bloco))
+                throw new \Exception("Por favor, escolha um bloco que exista!");
+
+            $bloco->numero = $this->numero;
+            $bloco->descricao = $this->descricao;
+            $bloco->save();
+
+            $response = array(
+                "status" => 1,
+                "message" => "Bloco alterado com sucesso."
+            );
+            echo json_encode($response);
+
+        } catch (\Exception $e) {
+            $response = array(
+                "status" => 2,
+                "message" => $e->getMessage()
+            );
+            echo json_encode($response);
+        } catch (\Error $e) {
+            $response = array(
+                "status" => 2,
+                "message" => "Ocorreu um erro " . $e->getMessage()
             );
             echo json_encode($response);
         }

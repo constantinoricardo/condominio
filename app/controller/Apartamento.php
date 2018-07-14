@@ -27,8 +27,10 @@ class Apartamento extends Controller
             $this->id = $params['id'];
         }
 
-        if (isset($params['morador_id']))
-            $this->morador_id = $params['morador_id'];
+//        if (($params['morador_id']))
+//            $this->morador_id = $params['morador_id'];
+
+        $this->morador_id = (empty($params['morador_id'])) ? null : $params['morador_id'];
     }
 
     public function delete() : void
@@ -99,6 +101,15 @@ class Apartamento extends Controller
         exit;
     }
 
+    /**
+     *
+     * @author Ricardo Constantino
+     *
+     * metodo usado para buscar tabela com as informações do apartamento,
+     * tipo numero do bloco e morador
+     *
+     * @return string
+     */
     public function find() : string
     {
         try {
@@ -106,15 +117,36 @@ class Apartamento extends Controller
             $this->parametros();
 
             $apartamentos = DB::table("apartamento")
-                ->select( "apartamento.id", "apartamento.numero", "bloco.descricao")
+                ->select( "apartamento.id", "apartamento.numero", "bloco.id as bloco_id", "bloco.descricao as bloco", "morador.nome as morador")
                 ->join("bloco", "bloco.id", "=", "apartamento.bloco_id")
-                ->whereNull("apartamento.morador_id")
+                ->leftJoin("morador", "morador.id", "=", "apartamento.morador_id")
                 ->get();
 
             echo json_encode($apartamentos);
 
         } catch (\Error $e) {
             $array = array("status" => 2,'message' => "Ocorreu um erro " . $e->getMessage());
+            echo json_encode($array);
+        }
+        exit;
+    }
+
+    public function buscarApartamentoPorBlocoId() : string
+    {
+        try {
+
+            $this->parametros();
+
+            $apartamentos = DB::table("apartamento")
+                ->select("id", "numero", "numero as descricao")
+                ->where("bloco_id", "=", $this->bloco_id)
+                ->whereNull("morador_id")
+                ->get();
+
+            echo json_encode($apartamentos);
+
+        } catch (\Error $e) {
+            $array = array('status' => 2, 'message' => 'Ocorreu um erro ' . $e->getMessage());
             echo json_encode($array);
         }
         exit;
@@ -218,6 +250,9 @@ class Apartamento extends Controller
 
             $objeto = new ModelApartamento();
             $apartamento = $objeto->find($this->id);
+
+            if (is_null($apartamento))
+                throw new \Exception("Por favor, escolha um apartamento que exista!");
 
             $apartamento->numero = $this->numero;
             $apartamento->bloco_id = $this->bloco_id;

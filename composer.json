@@ -2,7 +2,19 @@
   "require" : {
     "illuminate/database" : "5.6.*",
     "illuminate/hashing": "5.6.*",
-    "siriusphp/validation": "2.2.*"
+    "siriusphp/validation": "2.2.*",
+    "constantinoricardo/pagination-database": "dev-master"
+  },
+
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:constantinoricardo/pagination_database.git"
+    }
+  ],
+
+  "require-dev": {
+    "phpunit/phpunit" : "*"
   },
 
   "autoload" : {
