@@ -131,6 +131,27 @@ class Apartamento extends Controller
         exit;
     }
 
+    public function buscarApartamentoPorBlocoId() : string
+    {
+        try {
+
+            $this->parametros();
+
+            $apartamentos = DB::table("apartamento")
+                ->select("id", "numero", "numero as descricao")
+                ->where("bloco_id", "=", $this->bloco_id)
+                ->whereNull("morador_id")
+                ->get();
+
+            echo json_encode($apartamentos);
+
+        } catch (\Error $e) {
+            $array = array('status' => 2, 'message' => 'Ocorreu um erro ' . $e->getMessage());
+            echo json_encode($array);
+        }
+        exit;
+    }
+
     /**
      * @author Ricardo Constantino
      *
