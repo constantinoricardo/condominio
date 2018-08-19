@@ -41,6 +41,27 @@ class Morador extends Controller
             throw new \Exception("Morador já se encontra cadastrado");
     }
 
+    public function find() : string
+    {
+        try {
+
+            $this->parametros();
+
+            $apartamentos = DB::table("morador")
+                ->select( "apartamento.id", "apartamento.numero", "bloco.id as bloco_id", "bloco.descricao as bloco", "morador.nome as morador")
+                ->join("apartamento", "morador.id", "=", "apartamento.morador_id")
+                ->join("bloco", "bloco.id", "=", "apartamento.bloco_id")
+                ->get();
+
+            echo json_encode($apartamentos);
+
+        } catch (\Error $e) {
+            $array = array("status" => 2,'message' => "Ocorreu um erro " . $e->getMessage());
+            echo json_encode($array);
+        }
+        exit;
+    }
+
     public function delete() : void
     {
         try {
