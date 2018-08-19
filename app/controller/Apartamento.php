@@ -9,12 +9,24 @@ use Repositories\Apartamento as ApartamentoRepository;
 class Apartamento extends Controller
 {
 
+    /**
+     * @var $id int
+     */
     private $id;
 
+    /**
+     * @var $numero int
+     */
     private $numero;
 
+    /**
+     * @var $bloco_id int
+     */
     private $bloco_id;
 
+    /**
+     * @var $morador_id int
+     */
     private $morador_id;
 
     public function parametros() : void
