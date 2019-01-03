@@ -22,10 +22,10 @@ class Morador extends Controller
         $params = $this->getParameters();
 
         if (!empty($params)) {
-            $this->id = $params['id'];
-            $this->nome = $params['nome'];
-            $this->cpf = $params['cpf'];
-            $this->apartamento_id = $params['apartamento_id'];
+            $this->id = (empty($params['id'])) ? null : $params['id'];
+            $this->nome = (empty($params['nome'])) ? null : $params['nome'];
+            $this->cpf = (empty($params['cpf'])) ? null : $params['cpf'];
+            $this->apartamento_id = (empty($params['apartamento_id'])) ? null : $params['apartamento_id'];
         }
     }
 
@@ -48,7 +48,8 @@ class Morador extends Controller
             $this->parametros();
 
             $apartamentos = DB::table("morador")
-                ->select( "apartamento.id", "apartamento.numero", "bloco.id as bloco_id", "bloco.descricao as bloco", "morador.nome as morador")
+                ->select( "apartamento.id", "apartamento.numero", "bloco.id as bloco_id", "bloco.descricao as bloco",
+                    "morador.nome as morador", "morador.cpf as cpf")
                 ->join("apartamento", "morador.id", "=", "apartamento.morador_id")
                 ->join("bloco", "bloco.id", "=", "apartamento.bloco_id")
                 ->get();

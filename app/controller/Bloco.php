@@ -41,7 +41,7 @@ class Bloco extends Controller
     {
         $params = $this->getParameters();
 
-        $this->id = $params['id'];
+        $this->id = (!empty($params['id'])) ? $params['id'] : "";
         $this->numero = $params['numero'];
         $this->descricao = $params['descricao'];
     }

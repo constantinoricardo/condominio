@@ -21,11 +21,13 @@ if (is_null($dados)) {
         $dados = $_GET;
 }
 
+
 $path = $_SERVER['PATH_INFO'];
 $info = explode('/', $path);
 
 $controller = "Controller\\".ucfirst($info[1]);
 $method = $info[2];
+
 
 $array = array();
 

@@ -34,9 +34,9 @@ class Apartamento extends Controller
         $params = $this->getParameters();
 
         if (!empty($params)) {
-            $this->numero = $params['numero'];
-            $this->bloco_id = $params['bloco_id'];
-            $this->id = $params['id'];
+            $this->numero = (empty($params['numero'])) ? null : $params['numero'];
+            $this->bloco_id = (empty($params['bloco_id'])) ? null : $params['bloco_id'];
+            $this->id = (empty($params['id'])) ? null : $params['id'];
         }
 
 //        if (($params['morador_id']))
@@ -138,6 +138,25 @@ class Apartamento extends Controller
 
         } catch (\Error $e) {
             $array = array("status" => 2,'message' => "Ocorreu um erro " . $e->getMessage());
+            echo json_encode($array);
+        }
+        exit;
+    }
+
+    public function buscarTodosApartamentoPorBlocoId()
+    {
+        try {
+            $this->parametros();
+
+            $apartamentos = DB::table("apartamento")
+                ->select("id", "numero", "numero as descricao")
+                ->where("bloco_id", "=", $this->bloco_id)
+                ->get();
+
+            echo json_encode($apartamentos);
+
+        } catch (\Error $e) {
+            $array = array('status' => 2, 'message' => 'Ocorreu um erro ' . $e->getMessage());
             echo json_encode($array);
         }
         exit;
